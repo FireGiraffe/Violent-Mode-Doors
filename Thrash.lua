@@ -1,11 +1,45 @@
 local Spawner = loadstring(game:HttpGet("https://raw.githubusercontent.com/RegularVynixu/DOORS-Entity-Spawner-V2/main/init.luau"))()
 
-local redColor = Color3.fromRGB(255, 30, 30)
-for _, v in pairs(workspace:GetDescendants()) do
-	if v:IsA("PointLight") or v:IsA("SpotLight") then
-		v.Color = redColor
-	end
+local lights = {}
+local neons = {}
+local rooms = {}
+local TweenService = game:GetService("TweenService")
+for ,v in workspace.CurrentRooms:GetChildren() do
+    if game.ReplicatedStorage.GameData.LatestRoom.Value<=tonumber(v.Name) then
+        table.insert(rooms, v)
+    end
 end
+for ,v in rooms do
+    for _, v in v:GetDescendants() do
+        if v:IsA("Light") then
+            table.insert(lights, v)
+        end
+
+        if v:IsA("MeshPart") then
+            if v.Name == "Neon" then
+                table.insert(neons, v)
+            end
+        end
+    end
+end
+
+coroutine.wrap(function()
+    for i,v in lights do
+        local color = Color3.fromRGB(85, 255, 255)
+        task.spawn(function()
+            TweenService:Create(v,TweenInfo.new(1),{Color = color}):Play()
+        end)
+    end
+end)()
+
+coroutine.wrap(function()
+    for i,v in neons do
+        local color = Color3.fromRGB(85, 255, 255)
+        task.spawn(function()
+            TweenService:Create(v,TweenInfo.new(1),{Color = color}):Play()
+        end)
+    end
+end)()
 
 local Thrash = Spawner:Create({
 	Entity = {
