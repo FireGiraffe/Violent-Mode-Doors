@@ -35,7 +35,7 @@ local Thrash = Spawner:Create({
         Repair = false
     },
     Earthquake = {
-        Enabled = true
+        Enabled = false
     },
     CameraShake = {
         Enabled = true,
