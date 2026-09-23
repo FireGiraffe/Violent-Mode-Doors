@@ -65,7 +65,7 @@ Thrash:SetCallback("OnSpawned", function()
 	local lights = {}
 	local neons = {}
 	local rooms = {}
-	local targetColor = Color3.fromRGB(255, 25, 25)
+	local targetColor = Color3.fromRGB(175, 0, 0)
 	local latestRoomVal = game.ReplicatedStorage.GameData.LatestRoom.Value
 
 	for _, room in ipairs(workspace.CurrentRooms:GetChildren()) do
