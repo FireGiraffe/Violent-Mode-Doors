@@ -1,45 +1,5 @@
 local Spawner = loadstring(game:HttpGet("https://raw.githubusercontent.com/RegularVynixu/DOORS-Entity-Spawner-V2/main/init.luau"))()
-
-local lights = {}
-local neons = {}
-local rooms = {}
 local TweenService = game:GetService("TweenService")
-for ,v in workspace.CurrentRooms:GetChildren() do
-    if game.ReplicatedStorage.GameData.LatestRoom.Value<=tonumber(v.Name) then
-        table.insert(rooms, v)
-    end
-end
-for ,v in rooms do
-    for _, v in v:GetDescendants() do
-        if v:IsA("Light") then
-            table.insert(lights, v)
-        end
-
-        if v:IsA("MeshPart") then
-            if v.Name == "Neon" then
-                table.insert(neons, v)
-            end
-        end
-    end
-end
-
-coroutine.wrap(function()
-    for i,v in lights do
-        local color = Color3.fromRGB(85, 255, 255)
-        task.spawn(function()
-            TweenService:Create(v,TweenInfo.new(1),{Color = color}):Play()
-        end)
-    end
-end)()
-
-coroutine.wrap(function()
-    for i,v in neons do
-        local color = Color3.fromRGB(85, 255, 255)
-        task.spawn(function()
-            TweenService:Create(v,TweenInfo.new(1),{Color = color}):Play()
-        end)
-    end
-end)()
 
 local Thrash = Spawner:Create({
 	Entity = {
@@ -102,7 +62,44 @@ local Thrash = Spawner:Create({
 })
 
 Thrash:SetCallback("OnSpawned", function()
-	print("[Violent Mode] Thrash has spawned")
+	local lights = {}
+	local neons = {}
+	local rooms = {}
+	local targetColor = Color3.fromRGB(85, 255, 255)
+	local latestRoomVal = game.ReplicatedStorage.GameData.LatestRoom.Value
+
+	-- Collect current rooms
+	for _, room in ipairs(workspace.CurrentRooms:GetChildren()) do
+		local roomNum = tonumber(room.Name)
+		if roomNum and roomNum <= latestRoomVal then
+			table.insert(rooms, room)
+		end
+	end
+
+	-- Collect all lights and neon parts in those rooms
+	for _, room in ipairs(rooms) do
+		for _, desc in ipairs(room:GetDescendants()) do
+			if desc:IsA("Light") then
+				table.insert(lights, desc)
+			elseif desc:IsA("MeshPart") and desc.Name == "Neon" then
+				table.insert(neons, desc)
+			end
+		end
+	end
+
+	-- Tween the light sources
+	for _, light in ipairs(lights) do
+		task.spawn(function()
+			TweenService:Create(light, TweenInfo.new(1), {Color = targetColor}):Play()
+		end)
+	end
+
+	-- Tween the neon mesh parts
+	for _, neon in ipairs(neons) do
+		task.spawn(function()
+			TweenService:Create(neon, TweenInfo.new(1), {Color = targetColor}):Play()
+		end)
+	end
 end)
 
 Thrash:Run(true)
