@@ -5,7 +5,7 @@ if game.Workspace:FindFirstChild("SeekMovingNewClone") then return end
 
 coroutine.wrap(function()
     while true do
-        task.wait(90)
+        task.wait(100)
 
         game.ReplicatedStorage.GameData.LatestRoom.Changed:Wait()
         local currentRoom = game.ReplicatedStorage.GameData.LatestRoom.Value
@@ -21,7 +21,7 @@ end)()
 
 coroutine.wrap(function()
     while true do
-        task.wait(135)
+        task.wait(155)
 
         game.ReplicatedStorage.GameData.LatestRoom.Changed:Wait()
         local currentRoom = game.ReplicatedStorage.GameData.LatestRoom.Value
@@ -37,7 +37,7 @@ end)()
 
 coroutine.wrap(function()
     while true do
-        task.wait(170)
+        task.wait(230)
 
         game.ReplicatedStorage.GameData.LatestRoom.Changed:Wait()
         local currentRoom = game.ReplicatedStorage.GameData.LatestRoom.Value
