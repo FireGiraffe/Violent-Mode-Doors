@@ -1,4 +1,4 @@
-require(game.Players.LocalPlayer.PlayerGui.MainUI.Initiator.Main_Game).caption("Violent Mode Activated. Made By FireGiraffe. Models by FireGiraffe, jack_thebritishfella, and rebound0193.",true)
+require(game.Players.LocalPlayer.PlayerGui.MainUI.Initiator.Main_Game).caption("Violent Mode V1.0 Activated. Made By FireGiraffe. Models by FireGiraffe, jack_thebritishfella, and rebound0193.",true)
 print("Thanks for playing Violent Mode.")
 
 if game.Workspace:FindFirstChild("SeekMovingNewClone") then return end
