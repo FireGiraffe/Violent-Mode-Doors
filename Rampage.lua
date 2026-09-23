@@ -14,7 +14,7 @@ local function playGlitchSound()
 end
 
 playGlitchSound()
-task.wait(0.65)
+task.wait(1)
 
 local Rampage = Spawner:Create({
 	Entity = {
