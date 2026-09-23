@@ -98,9 +98,8 @@ function QCHWWK_fake_script()
 	local bar = script.Parent.Border.Bar
 
 	local stamPower = 100
-	local stamTick = 0.6 -- Lowered: Drains slower so sprinting lasts longer
-	local regenTick = 0.25 -- Lowered: Takes longer to regenerate stamina
-
+	local stamTick = 0.3
+	local regenTick = 0.25
 	local sprinting = false
 	local DEF = 15
 	local Walkspeed2 = DEF
