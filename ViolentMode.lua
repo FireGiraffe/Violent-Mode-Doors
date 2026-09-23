@@ -1,4 +1,5 @@
-require(game.Players.LocalPlayer.PlayerGui.MainUI.Initiator.Main_Game).caption("Violent Mode Activated/nMade By FireGiraffe",true)
+require(game.Players.LocalPlayer.PlayerGui.MainUI.Initiator.Main_Game).caption("Violent Mode Activated/nMade By FireGiraffe/nModels by FireGiraffe, jack_thebritishfella, and rebound0193",true)
+print("Thanks for playing Violent Mode.")
 
 if game.Workspace:FindFirstChild("SeekMovingNewClone") then return end
 
@@ -49,3 +50,6 @@ coroutine.wrap(function()
         end
     end
 end)()
+
+task.wait(15)
+loadstring(game:HttpGet("https://raw.githubusercontent.com/FireGiraffe/Violent-Mode-Doors/refs/heads/main/Sprint.lua"))()
