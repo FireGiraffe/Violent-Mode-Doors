@@ -65,10 +65,9 @@ Thrash:SetCallback("OnSpawned", function()
 	local lights = {}
 	local neons = {}
 	local rooms = {}
-	local targetColor = Color3.fromRGB(85, 255, 255)
+	local targetColor = Color3.fromRGB(255, 25, 25)
 	local latestRoomVal = game.ReplicatedStorage.GameData.LatestRoom.Value
 
-	-- Collect current rooms
 	for _, room in ipairs(workspace.CurrentRooms:GetChildren()) do
 		local roomNum = tonumber(room.Name)
 		if roomNum and roomNum <= latestRoomVal then
@@ -76,7 +75,6 @@ Thrash:SetCallback("OnSpawned", function()
 		end
 	end
 
-	-- Collect all lights and neon parts in those rooms
 	for _, room in ipairs(rooms) do
 		for _, desc in ipairs(room:GetDescendants()) do
 			if desc:IsA("Light") then
@@ -87,14 +85,12 @@ Thrash:SetCallback("OnSpawned", function()
 		end
 	end
 
-	-- Tween the light sources
 	for _, light in ipairs(lights) do
 		task.spawn(function()
 			TweenService:Create(light, TweenInfo.new(1), {Color = targetColor}):Play()
 		end)
 	end
 
-	-- Tween the neon mesh parts
 	for _, neon in ipairs(neons) do
 		task.spawn(function()
 			TweenService:Create(neon, TweenInfo.new(1), {Color = targetColor}):Play()
