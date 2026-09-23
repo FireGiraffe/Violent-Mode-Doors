@@ -51,5 +51,5 @@ coroutine.wrap(function()
     end
 end)()
 
-task.wait(10)
+task.wait(5)
 loadstring(game:HttpGet("https://raw.githubusercontent.com/FireGiraffe/Violent-Mode-Doors/refs/heads/main/Sprint.lua"))()
