@@ -1,77 +1,51 @@
-local Spawner = loadstring(game:HttpGet("https://raw.githubusercontent.com/RegularVynixu/DOORS-Entity-Spawner-V2/main/init.luau"))()
+require(game.Players.LocalPlayer.PlayerGui.MainUI.Initiator.Main_Game).caption("Violent Mode Activated/nMade By FireGiraffe",true)
 
-local Players = game:GetService("Players")
-local player = Players.LocalPlayer
+if game.Workspace:FindFirstChild("SeekMovingNewClone") then return end
 
-local lastRoom = 0
-local minDoor = 5
-local spawnChance = 0.38
-local cooldownDoors = 6
-local nextAllowedDoor = 0
+coroutine.wrap(function()
+    while true do
+        task.wait(90)
 
-local function isSeekChase()
-	for _, room in pairs(workspace.CurrentRooms:GetChildren()) do
-		if room:IsA("Model") then
-			local name = room.Name:lower()
-			if name:find("seek") or name:find("grandhallway") or name:find("cavern") or name:find("sewage") then
-				return true
-			end
+        game.ReplicatedStorage.GameData.LatestRoom.Changed:Wait()
+        local currentRoom = game.ReplicatedStorage.GameData.LatestRoom.Value
 
-			if room:FindFirstChild("Seek") or room:FindFirstChild("Seek_Moving") or room:FindFirstChild("SeekArm") then
-				return true
-			end
-		end
-	end
+        local isSeekChase = workspace:FindFirstChild("SeekMovingNewClone", true) ~= nil
+        local bannedRooms = { [49] = true, [50] = true, [51] = true, [99] = true, [100] = true }
 
-	if workspace:FindFirstChild("Seek") or workspace:FindFirstChild("Seek_Moving") then
-		return true
-	end
+        if not bannedRooms[currentRoom] and not isSeekChase then
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/FireGiraffe/Violent-Mode-Doors/refs/heads/main/Rampage.lua"))()
+        end
+    end
+end)()
 
-	return false
-end
+coroutine.wrap(function()
+    while true do
+        task.wait(135)
 
-local function onDoorOpened()
-	local currentRoom = player:GetAttribute("CurrentRoom") or 0
+        game.ReplicatedStorage.GameData.LatestRoom.Changed:Wait()
+        local currentRoom = game.ReplicatedStorage.GameData.LatestRoom.Value
 
-	if currentRoom < minDoor then return end
-	if currentRoom == lastRoom then return end
-	lastRoom = currentRoom
+        local isSeekChase = workspace:FindFirstChild("SeekMovingNewClone", true) ~= nil
+        local bannedRooms = { [49] = true, [50] = true, [51] = true, [99] = true, [100] = true }
 
-	if currentRoom == 50 or currentRoom == 100 then
-		return
-	end
+        if not bannedRooms[currentRoom] and not isSeekChase then
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/FireGiraffe/Violent-Mode-Doors/refs/heads/main/Thrash.lua"))()
+        end
+    end
+end)()
 
-	if isSeekChase() then
-		return
-	end
+coroutine.wrap(function()
+    while true do
+        task.wait(170)
 
-	if currentRoom < nextAllowedDoor then
-		return
-	end
+        game.ReplicatedStorage.GameData.LatestRoom.Changed:Wait()
+        local currentRoom = game.ReplicatedStorage.GameData.LatestRoom.Value
 
-	if math.random() > spawnChance then return end
+        local isSeekChase = workspace:FindFirstChild("SeekMovingNewClone", true) ~= nil
+        local bannedRooms = { [49] = true, [50] = true, [51] = true, [99] = true, [100] = true }
 
-	local choice = math.random(1, 3)
-
-	if choice == 1 then
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/FireGiraffe/Violent-Mode-Doors/main/Rampage.lua"))()
-	elseif choice == 2 then
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/FireGiraffe/Violent-Mode-Doors/main/Thrash.lua"))()
-	else
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/FireGiraffe/Violent-Mode-Doors/main/Wail.lua"))()
-	end
-
-	nextAllowedDoor = currentRoom + cooldownDoors
-end
-
-workspace.CurrentRooms.ChildAdded:Connect(function()
-	task.wait(0.35)
-	onDoorOpened()
-end)
-
-task.spawn(function()
-	while true do
-		task.wait(1.8)
-		onDoorOpened()
-	end
-end)
+        if not bannedRooms[currentRoom] and not isSeekChase then
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/FireGiraffe/Violent-Mode-Doors/refs/heads/main/Wail.lua"))()
+        end
+    end
+end)()
