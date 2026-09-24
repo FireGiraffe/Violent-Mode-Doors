@@ -1,43 +1,29 @@
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
 local localPlayer = Players.LocalPlayer
 
 local Spawner = loadstring(game:HttpGet("https://raw.githubusercontent.com/RegularVynixu/DOORS-Entity-Spawner-V2/main/init.luau"))()
 
 local function turnLightsGreen()
-	local lights = {}
-	local neons = {}
-	local rooms = {}
-	local targetColor = Color3.fromRGB(0, 175, 0)
-	local latestRoomVal = game.ReplicatedStorage.GameData.LatestRoom.Value
+	local targetColor = Color3.fromRGB(0, 255, 0)
+	local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
 
-	for _, room in ipairs(workspace.CurrentRooms:GetChildren()) do
-		local roomNum = tonumber(room.Name)
-		if roomNum and roomNum <= latestRoomVal then
-			table.insert(rooms, room)
-		end
-	end
+	local currentRooms = workspace:FindFirstChild("CurrentRooms")
+	if not currentRooms then return end
 
-	for _, room in ipairs(rooms) do
+	for _, room in ipairs(currentRooms:GetChildren()) do
 		for _, desc in ipairs(room:GetDescendants()) do
 			if desc:IsA("Light") then
-				table.insert(lights, desc)
-			elseif desc:IsA("MeshPart") and desc.Name == "Neon" then
-				table.insert(neons, desc)
+				task.spawn(function()
+					TweenService:Create(desc, tweenInfo, {Color = targetColor}):Play()
+				end)
+			elseif desc:IsA("BasePart") and desc.Material == Enum.Material.Neon then
+				task.spawn(function()
+					TweenService:Create(desc, tweenInfo, {Color = targetColor}):Play()
+				end)
 			end
 		end
-	end
-
-	for _, light in ipairs(lights) do
-		task.spawn(function()
-			TweenService:Create(light, TweenInfo.new(1), {Color = targetColor}):Play()
-		end)
-	end
-
-	for _, neon in ipairs(neons) do
-		task.spawn(function()
-			TweenService:Create(neon, TweenInfo.new(1), {Color = targetColor}):Play()
-		end)
 	end
 end
 
@@ -90,7 +76,7 @@ local Paralyze = Spawner:Create({
 		Type = "Guiding",
 		Hints = {
 			"You died to Paralyze.",
-			"The lights turned blue...",
+			"The lights turned green...",
 			"You must not move.",
 			"Stand completely still."
 		},
@@ -98,18 +84,14 @@ local Paralyze = Spawner:Create({
 	}
 })
 
--- Kill only if moving AND within 100 studs
 local moveConnection
 Paralyze:SetCallback("OnSpawned", function()
 	local model = Paralyze.Model
 	if not model then return end
 
-	local character = localPlayer.Character
-	if not character then return end
-
-	local humanoid = character:FindFirstChildOfClass("Humanoid")
-	local root = character:FindFirstChild("HumanoidRootPart")
-	if not humanoid or not root then return end
+	local character = localPlayer.Character or localPlayer.CharacterAdded:Wait()
+	local humanoid = character:WaitForChild("Humanoid")
+	local root = character:WaitForChild("HumanoidRootPart")
 
 	moveConnection = RunService.Heartbeat:Connect(function()
 		if not model or not model.Parent then return end
