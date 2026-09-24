@@ -1,5 +1,4 @@
 print("Thanks for playing Violent Mode.")
-loadstring(game:HttpGet("https://raw.githubusercontent.com/FireGiraffe/Violent-Mode-Doors/refs/heads/main/Sprint.lua"))()
 
 if game.Workspace:FindFirstChild("SeekMovingNewClone") then return end
 
