@@ -24,7 +24,7 @@ local Multimonster = Spawner:Create({
 		HeightOffset = 0
 	},
 	Movement = {
-		Speed = 320,
+		Speed = 800,
 		Delay = 2,
 		Reversed = false
 	},
@@ -37,15 +37,15 @@ local Multimonster = Spawner:Create({
 	Rebounding = {
 		Enabled = true,
 		Type = "Ambush",
-		Min = 4,
-		Max = 8,
+		Min = 8,
+		Max = 16,
 		Delay = 1.2
 	},
 	Lights = {
 		Flicker = {
 			Enabled = false
 		},
-		Shatter = true,
+		Shatter = false,
 		Repair = false
 	},
 	Earthquake = {
@@ -59,7 +59,7 @@ local Multimonster = Spawner:Create({
 	Crucifixion = {
 		Type = "Curious",
 		Enabled = true,
-		Range = 45,
+		Range = 51,
 		Resist = false,
 		Break = true
 	},
@@ -67,9 +67,9 @@ local Multimonster = Spawner:Create({
 		Type = "Curious",
 		Hints = {
 			"You encountered Multimonster...",
-			"It moves at extreme speeds and rebounds constantly.",
-			"When the hotel begins to shake and lights flicker endlessly, find cover immediately.",
-			"Do not leave your hiding spot too early; it returns multiple times."
+			"He is a rare one to find.",
+			"His arrival is shown by an earthquake",
+			"Good luck for next time."
 		},
 		Cause = "Multimonster"
 	}
