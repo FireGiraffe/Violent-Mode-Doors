@@ -9,12 +9,13 @@ local player = Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
 local humanoid = character:WaitForChild("Humanoid")
 
--- Instances:
 local StaminaBar = Instance.new("ScreenGui")
 local SideBar = Instance.new("Frame")
 local Bar_2 = Instance.new("Frame")
 
--- Properties:
+local NORMAL_COLOR = Color3.fromRGB(0, 210, 255)
+local EXHAUSTED_COLOR = Color3.fromRGB(255, 60, 60)
+
 StaminaBar.Name = "StaminaBar"
 StaminaBar.Parent = player:WaitForChild("PlayerGui")
 StaminaBar.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
@@ -22,23 +23,21 @@ StaminaBar.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 SideBar.Name = "SideBar"
 SideBar.Parent = StaminaBar
 SideBar.AnchorPoint = Vector2.new(0, 1)
-SideBar.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+SideBar.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 SideBar.BorderColor3 = Color3.fromRGB(0, 0, 0)
-SideBar.BorderSizePixel = 4
-SideBar.Position = UDim2.new(0.985890269, 0, 1, 0)
-SideBar.Size = UDim2.new(0.0141097549, 0, 0.17468825, 0)
+SideBar.BorderSizePixel = 3
+SideBar.Position = UDim2.new(0.98, 0, 0.95, 0)
+SideBar.Size = UDim2.new(0.012, 0, 0.2, 0)
 SideBar.Visible = true
 
 Bar_2.Name = "Bar"
 Bar_2.Parent = SideBar
 Bar_2.AnchorPoint = Vector2.new(0, 1)
-Bar_2.BackgroundColor3 = Color3.fromRGB(255, 255, 0)
-Bar_2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Bar_2.BackgroundColor3 = NORMAL_COLOR
 Bar_2.BorderSizePixel = 0
 Bar_2.Position = UDim2.new(0, 0, 1, 0)
 Bar_2.Size = UDim2.new(1, 0, 1, 0)
 
--- Mobile Sprint Button Instance
 local MobileSprintButton = Instance.new("ImageButton")
 local ButtonCorner = Instance.new("UICorner")
 local ButtonStroke = Instance.new("UIStroke")
@@ -79,109 +78,97 @@ function QCHWWK_fake_script()
 	local char = player.Character or player.CharacterAdded:Wait()
 
 	local stamPower = 100
-	local stamTick = 0.5
-	local baseRegenTick = 0.25
-	local regenTick = baseRegenTick
+	local stamTick = 0.6
+	local baseRegenTick = 0.35
 	local isExhausted = false
 
+	local wantSprint = false
 	local sprinting = false
 	local DEF = 15
 	local Walkspeed2 = DEF
 
 	local function showExhaustedCaption()
 		pcall(function()
-			require(player.PlayerGui.MainUI.Initiator.Main_Game).caption("You're exausted.", true)
+			require(player.PlayerGui.MainUI.Initiator.Main_Game).caption("You're exhausted.", true)
 		end)
 	end
 
-	local function startSprinting()
-		if isExhausted or stamPower <= 0 or sprinting then
-			return
+	local function updateSpeed()
+		if not char or not char:FindFirstChild("Humanoid") then return end
+		if sprinting then
+			char.Humanoid.WalkSpeed = DEF + 5
+		else
+			char.Humanoid.WalkSpeed = DEF
 		end
+		Walkspeed2 = char.Humanoid.WalkSpeed
+	end
+	task.spawn(function()
+		while true do
+			local currentHumanoid = char:FindFirstChild("Humanoid")
+			local isMoving = currentHumanoid and currentHumanoid.MoveDirection.Magnitude > 0
+			if wantSprint and not isExhausted and stamPower > 0 and isMoving then
+				sprinting = true
+				Started = true
+				stamPower = math.clamp(stamPower - stamTick, 0, 100)
 
-		DEF = char.Humanoid.WalkSpeed
-		Walkspeed2 = DEF + 5
-		char.Humanoid.WalkSpeed = Walkspeed2
-		sprinting = true
-		Started = true
-
-		ButtonStroke.Color = Color3.fromRGB(255, 255, 0)
-
-		while stamPower > 0 and sprinting do
-			SideBar.Bar.Size = UDim2.new(1, 0, stamPower / 100, 0)
-			stamPower = stamPower - stamTick
-
-			task.wait()
-
-			if stamPower <= 0 then
-				stamPower = 0
-				SideBar.Bar.Size = UDim2.new(1, 0, 0, 0)
-
-				isExhausted = true
-				regenTick = baseRegenTick / 2
-				showExhaustedCaption()
-
-				Walkspeed2 = DEF
-				char.Humanoid.WalkSpeed = Walkspeed2
+				if stamPower <= 0 then
+					isExhausted = true
+					sprinting = false
+					Started = false
+					updateSpeed()
+					showExhaustedCaption()
+				end
+			else
 				sprinting = false
 				Started = false
-				ButtonStroke.Color = Color3.fromRGB(255, 50, 50)
+				local regenRate = isExhausted and (baseRegenTick * 0.5) or baseRegenTick
+				stamPower = math.clamp(stamPower + regenRate, 0, 100)
+
+				if stamPower >= 100 and isExhausted then
+					isExhausted = false
+				end
+
+				updateSpeed()
 			end
-		end
-	end
-
-	local function stopSprinting()
-		if not sprinting then return end
-
-		Walkspeed2 = DEF
-		char.Humanoid.WalkSpeed = Walkspeed2
-		sprinting = false
-		Started = false
-
-		if not isExhausted then
-			ButtonStroke.Color = Color3.fromRGB(255, 255, 255)
-		end
-
-		while stamPower <= 100 and not sprinting do
-			stamPower = stamPower + regenTick
-
-			if stamPower >= 100 then
-				stamPower = 100
-				isExhausted = false
-				regenTick = baseRegenTick
+				
+			Bar_2.Size = UDim2.new(1, 0, stamPower / 100, 0)
+			if isExhausted then
+				Bar_2.BackgroundColor3 = EXHAUSTED_COLOR
+				ButtonStroke.Color = EXHAUSTED_COLOR
+			elseif sprinting then
+				Bar_2.BackgroundColor3 = NORMAL_COLOR
+				ButtonStroke.Color = NORMAL_COLOR
+			else
+				Bar_2.BackgroundColor3 = NORMAL_COLOR
 				ButtonStroke.Color = Color3.fromRGB(255, 255, 255)
 			end
 
-			SideBar.Bar.Size = UDim2.new(1, 0, stamPower / 100, 0)
-			task.wait()
+			task.wait(0.03)
 		end
-	end
+	end)
 
 	function sprint(name, IS, context)
 		if IS == Enum.UserInputState.Begin then
-			startSprinting()
+			wantSprint = true
 		elseif IS == Enum.UserInputState.End then
-			stopSprinting()
+			wantSprint = false
 		end
 	end
 
-	-- Touch inputs for Mobile
 	MobileSprintButton.MouseButton1Down:Connect(function()
-		startSprinting()
+		wantSprint = true
 	end)
 
 	MobileSprintButton.MouseButton1Up:Connect(function()
-		stopSprinting()
+		wantSprint = false
 	end)
 
 	char.Changed:Connect(function()
 		if player.Character and player.Character:FindFirstChild("Humanoid") then
-			if player.Character.Humanoid.WalkSpeed ~= Walkspeed2 and player.Character.Humanoid.WalkSpeed ~= 10 then
-				DEF = player.Character.Humanoid.WalkSpeed
-				if sprinting and not isExhausted then
-					Walkspeed2 = DEF + 5
-					player.Character.Humanoid.WalkSpeed = Walkspeed2
-				end
+			local curSpeed = player.Character.Humanoid.WalkSpeed
+			if curSpeed ~= Walkspeed2 and curSpeed ~= 10 then
+				DEF = curSpeed
+				updateSpeed()
 			end
 		end
 	end)
