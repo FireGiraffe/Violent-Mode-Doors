@@ -1,4 +1,5 @@
 print("Thanks for playing Violent Mode.")
+loadstring(game:HttpGet("https://raw.githubusercontent.com/FireGiraffe/Violent-Mode-Doors/refs/heads/main/Sprint.lua"))()
 
 if game.Workspace:FindFirstChild("SeekMovingNewClone") then return end
 
@@ -87,6 +88,3 @@ task.wait(2)
 require(game.Players.LocalPlayer.PlayerGui.MainUI.Initiator.Main_Game).caption("Made by FireGiraffe, help from jack_thebritishfella and Rip_Silence",true)
 task.wait(2)
 require(game.Players.LocalPlayer.PlayerGui.MainUI.Initiator.Main_Game).caption("Models by FireGiraffe, jack_thebritishfella, and rebound0193",true)
-
-task.wait(5)
-loadstring(game:HttpGet("https://raw.githubusercontent.com/FireGiraffe/Violent-Mode-Doors/refs/heads/main/Sprint.lua"))()
