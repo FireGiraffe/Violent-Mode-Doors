@@ -4,6 +4,46 @@ local localPlayer = Players.LocalPlayer
 
 local Spawner = loadstring(game:HttpGet("https://raw.githubusercontent.com/RegularVynixu/DOORS-Entity-Spawner-V2/main/init.luau"))()
 
+local function turnLightsGreen()
+	local lights = {}
+	local neons = {}
+	local rooms = {}
+	local targetColor = Color3.fromRGB(0, 175, 0)
+	local latestRoomVal = game.ReplicatedStorage.GameData.LatestRoom.Value
+
+	for _, room in ipairs(workspace.CurrentRooms:GetChildren()) do
+		local roomNum = tonumber(room.Name)
+		if roomNum and roomNum <= latestRoomVal then
+			table.insert(rooms, room)
+		end
+	end
+
+	for _, room in ipairs(rooms) do
+		for _, desc in ipairs(room:GetDescendants()) do
+			if desc:IsA("Light") then
+				table.insert(lights, desc)
+			elseif desc:IsA("MeshPart") and desc.Name == "Neon" then
+				table.insert(neons, desc)
+			end
+		end
+	end
+
+	for _, light in ipairs(lights) do
+		task.spawn(function()
+			TweenService:Create(light, TweenInfo.new(1), {Color = targetColor}):Play()
+		end)
+	end
+
+	for _, neon in ipairs(neons) do
+		task.spawn(function()
+			TweenService:Create(neon, TweenInfo.new(1), {Color = targetColor}):Play()
+		end)
+	end
+end
+
+turnLightsGreen()
+task.wait(1.5)
+
 local Paralyze = Spawner:Create({
 	Entity = {
 		Name = "Paralyze",
